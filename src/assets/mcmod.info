@@ -1,0 +1,21 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "obsidian_armor",
+    "name": "HaxCraft Obsidian Edition",
+    "description": "Adds tools and armor made with obsidian.",
+    "version": "1.1.0.1",
+    "mcversion": "1.7.10",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [ "WelcomeToBASH" ],
+    "credits": "Authored by WelcomeToBASH, with help from the HaxCraft Team",
+    "logoFile": "",
+    "screenshots": [],
+    "parent": "",
+    "requiredMods": [ "Forge" ],
+    "dependencies": [],
+    "dependants": [],
+    "useDependencyInformation": false
+  }]
+}
