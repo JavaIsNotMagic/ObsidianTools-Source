@@ -27,6 +27,8 @@ public class ObsidianArmor {
 	public static Item obsidian_hoe;
 	public static Item obsidian_ingot;
 	ToolMaterial obsidian = EnumHelper.addToolMaterial("obsidian", 3, 4500, 10.1F, 4.5F, 10);
+	//Generic Items
+	public static Item obsidian_dust;
 	//armor
 	public static Item obsidian_helmet;
 	public static Item obsidian_chest;
@@ -39,15 +41,20 @@ public class ObsidianArmor {
 	ObsidianArmorEventHandler handler = new ObsidianArmorEventHandler();
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		//Generic Items
+		obsidian_ingot = new ItemObsidianGeneric("obsidian_ingot");
+		obsdidian_dust = new ItemObsidianGeneric("obsdian_dust");
+		GameRegistry.registerItem(obsdian_dust, "ObsidianDust");
+		GameRegistry.registerItem(obsidian_ingot, "ObsidianIngot");
 		//tools
 		obsidian_pickaxe = new ItemObsidianPickaxe(obsidian, "obsidian_pickaxe");
 		obsidian_sword = new ItemObsidianSword(obsidian, "obsidian_sword");
 		obsidian_axe = new ItemObsidianAxe(obsidian, "obsidian_axe");
 		obsidian_hoe = new ItemObsidianHoe(obsidian, "obsidian_hoe");
-		obsidian_ingot = new ItemObsidianGeneric("obsidian_ingot");
-		GameRegistry.registerItem(obsidian_ingot, "ObsidianIngot");
 		GameRegistry.registerItem(obsidian_sword, "ObsidianSword");
 		GameRegistry.registerItem(obsidian_pickaxe, "ObsidianPickaxe");
+		GameRegistry.registerItem(obsidian_hoe, "ObsidianHoe");
+		GameRegistry.registerItem(obsidian_axe, "ObsidianAxe");
 		//Armor
 		obsidian_boots =  new ItemObsidianArmor(hardened_obsidian, 3, "obsidian_boots");
 		obsidian_helmet = new ItemObsidianArmor(hardened_obsidian, 0, "obsidian_helmet");
@@ -89,6 +96,18 @@ public class ObsidianArmor {
 				" H ",
 				'B', ObsidianArmor.obsidian_ingot, 'E', ObsidianArmor.obsidian_ingot, 'H', Items.stick
 		);
+		GameRegistry.addRecipe(new ItemStack(ObsidianArmor.obsidian_axe),
+				       " BC",
+				       " EF",
+				       " H ",
+				       'B', ObsidianArmor.obsidian_ingot, 'C', ObsidianArmor.obsidian_ingot, 'E', Items.stick, 'F', ObsidianArmor.obsidian_ingot, 'H', Items.stick
+		);
+		GameRegistry.addRecipe(new ItemStack(ObsidianArmor.obsidian_hoe),
+				       " BC",
+				       " E ",
+				       " H ",
+				       'B', ObsidianArmor.obsidian_ingot, 'C', ObsidianArmor.obsidian_ingot, 'E', Items.stick, 'H', Items.stick
+		);
 		GameRegistry.addRecipe(new ItemStack(ObsidianArmor.obsidian_helmet),
 				"ABC",
 				"D F",
@@ -113,5 +132,6 @@ public class ObsidianArmor {
 		);
 		//Smelting Recipes
 		GameRegistry.addSmelting(ObsidianArmor.obsidite_ore, new ItemStack(ObsidianArmor.obsidian_ingot), 5F);
+		GameRegistry.addSmelting(ObsidianArmor.osbidian_dust, new ItemStack(ObsdianArmor.obsdian_ingot, 2), 5F);
 	}
 }
