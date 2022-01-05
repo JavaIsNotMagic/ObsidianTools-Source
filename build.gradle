@@ -1,0 +1,155 @@
+//Setting the version from an argument
+if (project.hasProperty("projVersion")) {
+  project.version = project.projVersion
+} else {
+  project.version = "1.0.0"
+}
+
+def root = System.getProperty("user.home") + "/Desktop/Programming/Java/DoomsdayMod"
+def data = System.getProperty("user.home") + "/Desktop/Programming/Java/DoomsdayMod/bin/data"
+def win_path = System.getProperty('user.home') + "/AppData/Roaming/.minecraft/mods"
+def linux_path = System.getProperty('user.home') + "/.minecraft/mods"
+def sys_name = System.getProperty('os.name')
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = "https://jcenter.bintray.com/" }
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+            changing = true
+        }
+    }
+}
+
+apply plugin: "forge"
+
+
+group= "com.haxium.basicmod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "obsidian_armor"
+
+minecraft {
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
+}
+
+dependencies {
+    // you may put jars on which you depend on in ./libs
+    // or you may define them like so..
+    //compile "some.group:artifact:version:classifier"
+    //compile "some.group:artifact:version"
+      
+    // real examples
+    //compile "com.mod-buildcraft:buildcraft:6.0.8:dev"  // adds buildcraft to the dev env
+    //compile "com.googlecode.efficient-java-matrix-library:ejml:0.24" // adds ejml to the dev env
+
+    // for more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+}
+
+processResources
+{
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE //Ignore duplicate files
+
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+                
+        // replace version and mcversion
+        expand "version":project.version, "mcversion":project.minecraft.version
+    }
+        
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+}
+
+//Custom tasks
+
+task updateJSON(type: Exec) {
+    def update_command_windows = ['bin/update-json.exe', project.version]
+    def update_command_linux = ['bin/update-json', project.version]
+    
+    if("$sys_name" == "Windows") {
+        commandLine update_command_windows
+    } else {
+        commandLine update_command_linux
+    }
+}
+
+task copy(dependsOn: build, type: Copy) {
+     
+     from "build/libs"
+     into "$win_path"
+     include "obsidian_armor-$project.version*"
+}
+
+task copy_linux(dependsOn: build, type: Copy) {
+     
+     from "build/libs"
+     into "$linux_path"
+     include "obsidian_armor-$project.version*"
+}
+
+task remove(dependsOn: build, type: Delete) {
+
+     delete fileTree("$win_path") {
+         include "**/obsidian_armor*.jar"
+         exclude "**/obsidian_armor-$project.version*"
+     }
+}
+
+task remove_linux(dependsOn: build, type: Delete) {
+
+     delete fileTree("$linux_path") {
+         include "**/obsidian_armor*.jar"
+         exclude "**/obsidian_armor-$project.version*"
+     }
+}
+
+task remove_test(dependsOn: build, type: Delete) {
+    delete fileTree("$win_path") {
+        include '**/obsidian_armor*.jar'
+        exclude "**/obsidian_armor-$project.version*"
+    }
+}
+
+task remove_test_linux(dependsOn: build, type: Delete) {
+    delete fileTree("$linux_path") {
+        include '**/obsidian_armor*.jar'
+        exclude "**/obsidian_armor-$project.version*"
+    }
+}
+
+task copy_test(dependsOn: build, type: Copy) {
+    from "build/libs"
+    into System.getProperty('user.home') + "/Desktop/Minecraft-Testing/mods"
+    include "obsidian_armor-$project.version*"
+}
+
+//Copy the release and push to github
+if("$sys_name" == "Windows") {
+    updateJSON.mustRunAfter copy
+    copy.finalizedBy updateJSON
+    updateJSON.finalizedBy remove
+} else {
+    updateJSON.mustRunAfter copy_linux
+    copy_linux.finalizedBy updateJSON
+    updateJSON.finalizedBy remove_linux
+}
