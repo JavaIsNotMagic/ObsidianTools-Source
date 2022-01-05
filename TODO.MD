@@ -1,7 +1,5 @@
 #ObsidianTools-Source: TODO
 
-1. Add Hoe texture
-2. Add Axe texture
-3. Add Dust texture
-4. Modify SAG Mill and Alloy Smelter config to allow ObsidianArmor Items
+1. Modify SAG Mill and Alloy Smelter config to allow ObsidianArmor Items
+2. Figure out language file for English
 
